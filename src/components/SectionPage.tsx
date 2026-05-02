@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { AppLayout } from '@/components/AppLayout'
 import { EmptyState } from '@/components/EmptyState'
 import { PhaseWarningBanner } from '@/components/PhaseWarningBanner'
 import { SpecCard } from '@/components/SpecCard'
@@ -9,7 +8,8 @@ import { DataCard } from '@/components/DataCard'
 import { StepIndicator, type StepStatus } from '@/components/StepIndicator'
 import { loadProductData } from '@/lib/product-loader'
 import { loadSectionData } from '@/lib/section-loader'
-import { ChevronRight, Layout, Image, Download, ArrowRight, LayoutList } from 'lucide-react'
+import { useProject } from '@/lib/project-context'
+import { ChevronRight, Layout, Image, Download, ArrowRight, LayoutList, ArrowLeft } from 'lucide-react'
 
 /**
  * Determine the status of each step based on what data exists
@@ -45,29 +45,28 @@ function areRequiredStepsComplete(sectionData: ReturnType<typeof loadSectionData
 export function SectionPage() {
   const { sectionId } = useParams<{ sectionId: string }>()
   const navigate = useNavigate()
+  const { projectId } = useProject()
 
   // Load product data to get section info
-  const productData = useMemo(() => loadProductData(), [])
+  const productData = useMemo(() => loadProductData(projectId), [projectId])
   const sections = productData.roadmap?.sections || []
   const section = sections.find((s) => s.id === sectionId)
   const currentIndex = sections.findIndex((s) => s.id === sectionId)
 
   // Load section-specific data (spec, data.json, screen designs, screenshots)
   const sectionData = useMemo(
-    () => (sectionId ? loadSectionData(sectionId) : null),
-    [sectionId]
+    () => (sectionId ? loadSectionData(projectId, sectionId) : null),
+    [projectId, sectionId]
   )
 
   // Handle missing section
   if (!section) {
     return (
-      <AppLayout backTo="/sections" backLabel="Sections">
-        <div className="text-center py-12">
-          <p className="text-stone-600 dark:text-stone-400">
-            Section not found: {sectionId}
-          </p>
-        </div>
-      </AppLayout>
+      <div className="text-center py-12">
+        <p className="text-stone-600 dark:text-stone-400">
+          Section not found: {sectionId}
+        </p>
+      </div>
     )
   }
 
@@ -79,10 +78,17 @@ export function SectionPage() {
   const nextSection = !isLastSection ? sections[currentIndex + 1] : null
 
   return (
-    <AppLayout backTo="/sections" backLabel="Sections" title={section.title}>
+    <>
       <div className="space-y-6">
-        {/* Page intro */}
+        {/* Back link + Page intro */}
         <div className="mb-8">
+          <button
+            onClick={() => navigate(`/${projectId}/design/sections`)}
+            className="flex items-center gap-1.5 text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors mb-4"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" strokeWidth={2} />
+            Sections
+          </button>
           <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 mb-2">
             {section.title}
           </h1>
@@ -123,7 +129,7 @@ export function SectionPage() {
                   {sectionData.screenDesigns.map((screenDesign) => (
                     <li key={screenDesign.name}>
                       <Link
-                        to={`/sections/${sectionId}/screen-designs/${screenDesign.name}`}
+                        to={`/${projectId}/design/sections/${sectionId}/screen-designs/${screenDesign.name}`}
                         className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors"
                       >
                         <div className="flex items-center gap-3 min-w-0">
@@ -220,7 +226,7 @@ export function SectionPage() {
               {nextSection ? (
                 <>
                   <button
-                    onClick={() => navigate(`/sections/${nextSection.id}`)}
+                    onClick={() => navigate(`/${projectId}/design/sections/${nextSection.id}`)}
                     className="w-full flex items-center justify-between gap-4 px-6 py-4 bg-stone-900 dark:bg-stone-100 text-stone-100 dark:text-stone-900 rounded-lg hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
@@ -230,7 +236,7 @@ export function SectionPage() {
                     <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" strokeWidth={1.5} />
                   </button>
                   <button
-                    onClick={() => navigate('/sections')}
+                    onClick={() => navigate(`/${projectId}/design/sections`)}
                     className="w-full flex items-center justify-between gap-4 px-6 py-4 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 rounded-lg hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
@@ -243,7 +249,7 @@ export function SectionPage() {
               ) : (
                 /* If this is the last or only section, show single link back to sections */
                 <button
-                  onClick={() => navigate('/sections')}
+                  onClick={() => navigate(`/${projectId}/design/sections`)}
                   className="w-full flex items-center justify-between gap-4 px-6 py-4 bg-stone-900 dark:bg-stone-100 text-stone-100 dark:text-stone-900 rounded-lg hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
@@ -257,6 +263,6 @@ export function SectionPage() {
           </StepIndicator>
         )}
       </div>
-    </AppLayout>
+    </>
   )
 }

@@ -4,6 +4,7 @@ import { ArrowLeft, PanelLeft, Maximize2, GripVertical, Smartphone, Tablet, Moni
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { loadShellPreview } from '@/lib/shell-loader'
+import { useProject } from '@/lib/project-context'
 import React from 'react'
 
 const MIN_WIDTH = 320
@@ -11,6 +12,7 @@ const DEFAULT_WIDTH_PERCENT = 100
 
 export function ShellDesignPage() {
   const navigate = useNavigate()
+  const { projectId } = useProject()
   const [widthPercent, setWidthPercent] = useState(DEFAULT_WIDTH_PERCENT)
   const containerRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
@@ -64,7 +66,7 @@ export function ShellDesignPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate('/design')}
+            onClick={() => navigate(`/${projectId}/design`)}
             className="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 -ml-2"
           >
             <ArrowLeft className="w-4 h-4 mr-2" strokeWidth={1.5} />
@@ -121,7 +123,7 @@ export function ShellDesignPage() {
             </span>
             <ThemeToggle />
             <a
-              href="/shell/design/fullscreen"
+              href={`/${projectId}/design/shell/fullscreen`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors"
@@ -154,7 +156,7 @@ export function ShellDesignPage() {
           style={{ width: previewWidth, minWidth: MIN_WIDTH, maxWidth: '100%' }}
         >
           <iframe
-            src="/shell/design/fullscreen"
+            src={`/${projectId}/design/shell/fullscreen`}
             className="w-full h-full border-0"
             title="Shell Preview"
           />
@@ -179,7 +181,8 @@ export function ShellDesignPage() {
  * Syncs theme with parent window via localStorage
  */
 export function ShellDesignFullscreen() {
-  const shellPreviewLoader = loadShellPreview()
+  const { projectId } = useProject()
+  const shellPreviewLoader = loadShellPreview(projectId)
 
   const ShellPreviewComponent = useMemo(() => {
     if (!shellPreviewLoader) return null

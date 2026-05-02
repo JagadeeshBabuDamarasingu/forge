@@ -1,0 +1,8 @@
+{
+  "orchestration": {
+    "autonomy": "manual",
+    "auto_chain": {},
+    "max_parallel_agents": 3,
+    "roundtable_quorum": 3
+  }
+}

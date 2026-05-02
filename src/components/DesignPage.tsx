@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { AppLayout } from '@/components/AppLayout'
 import { EmptyState } from '@/components/EmptyState'
 import { StepIndicator, type StepStatus } from '@/components/StepIndicator'
 import { NextPhaseButton } from '@/components/NextPhaseButton'
 import { loadProductData } from '@/lib/product-loader'
+import { useProject } from '@/lib/project-context'
 import { ChevronRight, Layout } from 'lucide-react'
 
 // Map Tailwind color names to actual color values for preview
@@ -64,7 +64,8 @@ function getDesignPageStepStatuses(
 }
 
 export function DesignPage() {
-  const productData = useMemo(() => loadProductData(), [])
+  const { projectId } = useProject()
+  const productData = useMemo(() => loadProductData(projectId), [projectId])
   const designSystem = productData.designSystem
   const shell = productData.shell
 
@@ -75,7 +76,7 @@ export function DesignPage() {
   const stepStatuses = getDesignPageStepStatuses(hasDesignSystem, hasShell)
 
   return (
-    <AppLayout>
+    <>
       <div className="space-y-6">
         {/* Page intro */}
         <div className="mb-8">
@@ -212,7 +213,7 @@ export function DesignPage() {
                 {shell.hasComponents && (
                   <div className="pt-2 border-t border-stone-100 dark:border-stone-800">
                     <Link
-                      to="/shell/design"
+                      to={`/${projectId}/design/shell`}
                       className="flex items-center justify-between gap-4 py-2 hover:text-stone-900 dark:hover:text-stone-100 transition-colors group"
                     >
                       <div className="flex items-center gap-3">
@@ -242,11 +243,11 @@ export function DesignPage() {
         {/* Next Phase Button - shown when all steps complete */}
         {allStepsComplete && (
           <StepIndicator step={3} status="current" isLast>
-            <NextPhaseButton nextPhase="sections" />
+            <NextPhaseButton nextPhase={`/${projectId}/design/sections`} />
           </StepIndicator>
         )}
       </div>
-    </AppLayout>
+    </>
   )
 }
 

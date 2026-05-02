@@ -1,5 +1,20 @@
 # Design Tokens
 
+## Path Resolution
+
+Before starting, determine the **active project ID**:
+1. Look for `projects/*/project.json` files to find projects
+2. If only one project exists, use it
+3. If multiple exist, ask the user: "Which project are we working on?"
+4. If no projects exist, ask the user to run `/new-project` first
+
+**All file paths in this command use shorthand notation. Resolve them as follows:**
+- `product/` → `projects/[project-id]/product/`
+- `src/sections/[section-id]/` → `src/sections/[project-id]/[section-id]/`
+- `src/shell/` → `src/shell/[project-id]/`
+
+Replace `[project-id]` with the actual project ID throughout.
+
 You are helping the user choose colors and typography for their product. These design tokens will be used consistently across all screen designs and the application shell.
 
 ## Step 1: Check Prerequisites

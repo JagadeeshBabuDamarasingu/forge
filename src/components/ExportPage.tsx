@@ -2,23 +2,24 @@ import { useMemo } from 'react'
 import { Check, AlertTriangle, FileText, FolderTree, ChevronDown, Download, Package } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { AppLayout } from '@/components/AppLayout'
 import { loadProductData, hasExportZip, getExportZipUrl } from '@/lib/product-loader'
 import { getAllSectionIds, getSectionScreenDesigns } from '@/lib/section-loader'
+import { useProject } from '@/lib/project-context'
 
 export function ExportPage() {
-  const productData = useMemo(() => loadProductData(), [])
+  const { projectId } = useProject()
+  const productData = useMemo(() => loadProductData(projectId), [projectId])
 
   // Get section stats
   const sectionStats = useMemo(() => {
-    const allSectionIds = getAllSectionIds()
+    const allSectionIds = getAllSectionIds(projectId)
     const sectionCount = productData.roadmap?.sections.length || 0
     const sectionsWithScreenDesigns = allSectionIds.filter(id => {
-      const screenDesigns = getSectionScreenDesigns(id)
+      const screenDesigns = getSectionScreenDesigns(projectId, id)
       return screenDesigns.length > 0
     }).length
     return { sectionCount, sectionsWithScreenDesigns, allSectionIds }
-  }, [productData.roadmap])
+  }, [projectId, productData.roadmap])
 
   const hasOverview = !!productData.overview
   const hasRoadmap = !!productData.roadmap
@@ -30,11 +31,11 @@ export function ExportPage() {
   const requiredComplete = hasOverview && hasRoadmap && hasSections
 
   // Check for export zip
-  const exportZipAvailable = hasExportZip()
-  const exportZipUrl = getExportZipUrl()
+  const exportZipAvailable = hasExportZip(projectId)
+  const exportZipUrl = getExportZipUrl(projectId)
 
   return (
-    <AppLayout>
+    <>
       <div className="space-y-6">
         {/* Page intro */}
         <div className="mb-8">
@@ -264,7 +265,7 @@ export function ExportPage() {
           </CardContent>
         </Card>
       </div>
-    </AppLayout>
+    </>
   )
 }
 

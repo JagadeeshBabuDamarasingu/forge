@@ -6,6 +6,7 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { loadScreenDesignComponent, sectionUsesShell } from '@/lib/section-loader'
 import { loadAppShell, hasShellComponents, loadShellInfo } from '@/lib/shell-loader'
 import { loadProductData } from '@/lib/product-loader'
+import { useProject } from '@/lib/project-context'
 import React from 'react'
 
 const MIN_WIDTH = 320
@@ -14,12 +15,13 @@ const DEFAULT_WIDTH_PERCENT = 100
 export function ScreenDesignPage() {
   const { sectionId, screenDesignName } = useParams<{ sectionId: string; screenDesignName: string }>()
   const navigate = useNavigate()
+  const { projectId } = useProject()
   const [widthPercent, setWidthPercent] = useState(DEFAULT_WIDTH_PERCENT)
   const containerRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
 
   // Load product data to get section title
-  const productData = useMemo(() => loadProductData(), [])
+  const productData = useMemo(() => loadProductData(projectId), [projectId])
   const section = productData.roadmap?.sections.find((s) => s.id === sectionId)
 
   // Handle resize drag
@@ -71,7 +73,7 @@ export function ScreenDesignPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(`/sections/${sectionId}`)}
+            onClick={() => navigate(`/${projectId}/design/sections/${sectionId}`)}
             className="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 -ml-2"
           >
             <ArrowLeft className="w-4 h-4 mr-2" strokeWidth={1.5} />
@@ -134,7 +136,7 @@ export function ScreenDesignPage() {
             </span>
             <ThemeToggle />
             <a
-              href={`/sections/${sectionId}/screen-designs/${screenDesignName}/fullscreen`}
+              href={`/${projectId}/design/sections/${sectionId}/screen-designs/${screenDesignName}/fullscreen`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors"
@@ -167,7 +169,7 @@ export function ScreenDesignPage() {
           style={{ width: previewWidth, minWidth: MIN_WIDTH, maxWidth: '100%' }}
         >
           <iframe
-            src={`/sections/${sectionId}/screen-designs/${screenDesignName}/fullscreen`}
+            src={`/${projectId}/design/sections/${sectionId}/screen-designs/${screenDesignName}/fullscreen`}
             className="w-full h-full border-0"
             title="Screen Design Preview"
           />
@@ -194,11 +196,12 @@ export function ScreenDesignPage() {
  */
 export function ScreenDesignFullscreen() {
   const { sectionId, screenDesignName } = useParams<{ sectionId: string; screenDesignName: string }>()
+  const { projectId } = useProject()
 
   // Load screen design component
   const ScreenDesignComponent = useMemo(() => {
     if (!sectionId || !screenDesignName) return null
-    const loader = loadScreenDesignComponent(sectionId, screenDesignName)
+    const loader = loadScreenDesignComponent(projectId, sectionId, screenDesignName)
     if (!loader) return null
     // Wrap the loader to handle potential export issues
     return React.lazy(async () => {
@@ -214,22 +217,22 @@ export function ScreenDesignFullscreen() {
         return { default: () => <div>Failed to load: {screenDesignName}</div> }
       }
     })
-  }, [sectionId, screenDesignName])
+  }, [projectId, sectionId, screenDesignName])
 
   // Load AppShell component if it exists AND this section uses the shell
   const AppShellComponent = useMemo(() => {
     // Check if this section should use the shell (based on spec.md config)
-    if (sectionId && !sectionUsesShell(sectionId)) {
+    if (sectionId && !sectionUsesShell(projectId, sectionId)) {
       console.log('[ScreenDesignFullscreen] Section configured to not use shell')
       return null
     }
 
     // Check if shell components exist
-    const shellExists = hasShellComponents()
+    const shellExists = hasShellComponents(projectId)
     console.log('[ScreenDesignFullscreen] Shell exists:', shellExists)
     if (!shellExists) return null
 
-    const loader = loadAppShell()
+    const loader = loadAppShell(projectId)
     console.log('[ScreenDesignFullscreen] AppShell loader:', loader)
     if (!loader) {
       console.warn('[ScreenDesignFullscreen] hasShellComponents() returned true but loadAppShell() returned null')
@@ -250,7 +253,7 @@ export function ScreenDesignFullscreen() {
         // Create a wrapper that provides default props to the shell
         const ShellWrapper = ({ children }: { children?: React.ReactNode }) => {
           // Try to get navigation items from shell spec
-          const shellInfo = loadShellInfo()
+          const shellInfo = loadShellInfo(projectId)
           const specNavItems = shellInfo?.spec?.navigationItems || []
 
           // Parse navigation items from spec (format: "**Label** → Description")
@@ -294,7 +297,7 @@ export function ScreenDesignFullscreen() {
         return { default: ({ children }: { children?: React.ReactNode }) => <>{children}</> }
       }
     })
-  }, [sectionId]) // Depends on sectionId to check section-specific shell config
+  }, [projectId, sectionId]) // Depends on projectId + sectionId to check section-specific shell config
 
   // Sync theme with parent window
   useEffect(() => {

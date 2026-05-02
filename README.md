@@ -1,8 +1,8 @@
-<img width="1280" height="640" alt="Design OS" src="https://github.com/user-attachments/assets/a9c04258-7b9a-45b6-8475-3431cdf5dbe9" />
+<img width="1280" height="640" alt="Forge" src="https://github.com/user-attachments/assets/a9c04258-7b9a-45b6-8475-3431cdf5dbe9" />
 
-## The missing design process between your idea and your codebase.
+## From idea to go-live — the full project lifecycle, guided by AI.
 
-[Design OS](https://buildermethods.com/design-os) is a product planning and design tool that helps you define your product vision, sketch out your data shape, design your UI, and export production-ready components for implementation. Rather than jumping straight into code, you work through a guided process that captures what you're building and why—then hands off everything your coding agent needs to build it right.
+**Forge** is a full-lifecycle project management tool that takes hardware and software projects from ideation all the way to deployment. Rather than jumping straight into code, you work through a structured AI-guided process — Analyse, Plan, Design, Build, Ship — so that every decision is captured, every handoff is explicit, and your coding agents always know what to build.
 
 ## The Problem
 
@@ -10,16 +10,40 @@ AI coding tools are incredible at building fast. But the results often miss the 
 
 **The core issue:** we're asking coding agents to figure out what to build *and* build it simultaneously. Design decisions get made on the fly, buried in code, impossible to adjust without starting over. There's no spec. No shared understanding. No source of truth for what "done" looks like.
 
-## The Design OS Process
+## The Forge Process
 
-Design OS powers a guided design and architecture process. You + AI, working together through structured steps:
+Forge powers a guided, multi-phase project lifecycle. You + AI, working together through structured steps:
 
-1. **Product Planning** — Define your vision, break down your roadmap, and model your data
-2. **Design System** — Choose colors, typography, and design your application shell
-3. **Section Design** — For each feature area: specify requirements, generate sample data, and design the screens
-4. **Export** — Generate a complete handoff package for implementation
+1. **Analyse** — Define your problem brief, research the market, and write your PRFAQ
+2. **Plan** — Write your PRD, architect your system, and spec your UX
+3. **Design** — Choose design tokens, design your application shell, define sections, and generate screen designs
+4. **Build** — Break work into epics and stories, track sprints, and run multi-perspective roundtables
+5. **Ship** — Generate a launch checklist and log deployments
 
-Each step is a conversation. The AI asks questions, you provide direction, and together you shape a product that matches your vision—before any implementation begins.
+Each step is a conversation. The AI asks questions, you provide direction, and together you shape a product that matches your vision — before any implementation begins.
+
+**Project types** let you scope the process to your needs:
+- **Quick** — Plan + Design only
+- **Standard** — Analyse + Plan + Design + Build
+- **Full** — All five phases
+
+---
+
+## Design OS — Built In
+
+The Design phase in Forge is powered by Design OS, embedded as the design module. It handles:
+
+- Product vision, roadmap, and data shape
+- Design system (colors, typography)
+- Application shell design
+- Section-by-section screen design
+- Export of production-ready UI handoff packages for your coding agent
+
+---
+
+## Multi-Project Workspace
+
+Forge manages multiple projects from a single dashboard. Each project is isolated under `projects/[project-id]/` with its own phases, files, memory, and orchestration config.
 
 ---
 
@@ -31,7 +55,7 @@ Docs, installation, usage, & best practices 👉 [It's all here](https://builder
 
 ## Support, Training & Community
 
-For official support, training, and community as you use Design OS—for yourself or with your team, consider joining _Builder Methods Pro_. You'll get access to Brian Casel (the creator) for questions, a community of builders using Design OS, plus all Builder Methods workshops and training on AI-first development.
+For official support, training, and community as you use Forge — for yourself or with your team, consider joining _Builder Methods Pro_. You'll get access to Brian Casel (the creator) for questions, a community of builders using Forge, plus all Builder Methods workshops and training on AI-first development.
 
 👉 [Join Builder Methods Pro](https://buildermethods.com/pro)
 
@@ -41,7 +65,7 @@ For official support, training, and community as you use Design OS—for yoursel
 
 Read the [changelog](CHANGELOG.md)
 
-[Subscribe to be notified of major new releases of Design OS](https://buildermethods.com/design-os)
+[Subscribe to be notified of major new releases](https://buildermethods.com/design-os)
 
 ---
 

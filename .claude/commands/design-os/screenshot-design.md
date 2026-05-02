@@ -1,5 +1,20 @@
 # Screenshot Screen Design
 
+## Path Resolution
+
+Before starting, determine the **active project ID**:
+1. Look for `projects/*/project.json` files to find projects
+2. If only one project exists, use it
+3. If multiple exist, ask the user: "Which project are we working on?"
+4. If no projects exist, ask the user to run `/new-project` first
+
+**All file paths in this command use shorthand notation. Resolve them as follows:**
+- `product/` → `projects/[project-id]/product/`
+- `src/sections/[section-id]/` → `src/sections/[project-id]/[section-id]/`
+- `src/shell/` → `src/shell/[project-id]/`
+
+Replace `[project-id]` with the actual project ID throughout.
+
 You are helping the user capture a screenshot of a screen design they've created. The screenshot will be saved to the product folder for documentation purposes.
 
 ## Prerequisites: Check for Playwright MCP

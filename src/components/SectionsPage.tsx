@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { AppLayout } from '@/components/AppLayout'
 import { EmptyState } from '@/components/EmptyState'
 import { PhaseWarningBanner } from '@/components/PhaseWarningBanner'
 import { NextPhaseButton } from '@/components/NextPhaseButton'
 import { loadProductData } from '@/lib/product-loader'
 import { getSectionScreenDesigns, getSectionScreenshots, hasSectionSpec, hasSectionData } from '@/lib/section-loader'
+import { useProject } from '@/lib/project-context'
 import { ChevronRight, Check, Circle } from 'lucide-react'
 
 interface SectionProgress {
@@ -18,12 +18,12 @@ interface SectionProgress {
   screenshotCount: number
 }
 
-function getSectionProgress(sectionId: string): SectionProgress {
-  const screenDesigns = getSectionScreenDesigns(sectionId)
-  const screenshots = getSectionScreenshots(sectionId)
+function getSectionProgress(projectId: string, sectionId: string): SectionProgress {
+  const screenDesigns = getSectionScreenDesigns(projectId, sectionId)
+  const screenshots = getSectionScreenshots(projectId, sectionId)
   return {
-    hasSpec: hasSectionSpec(sectionId),
-    hasData: hasSectionData(sectionId),
+    hasSpec: hasSectionSpec(projectId, sectionId),
+    hasData: hasSectionData(projectId, sectionId),
     hasScreenDesigns: screenDesigns.length > 0,
     screenDesignCount: screenDesigns.length,
     hasScreenshots: screenshots.length > 0,
@@ -33,18 +33,18 @@ function getSectionProgress(sectionId: string): SectionProgress {
 
 export function SectionsPage() {
   const navigate = useNavigate()
-  const productData = useMemo(() => loadProductData(), [])
+  const { projectId } = useProject()
+  const productData = useMemo(() => loadProductData(projectId), [projectId])
 
   const sections = productData.roadmap?.sections || []
 
-  // Calculate progress for each section
   const sectionProgressMap = useMemo(() => {
     const map: Record<string, SectionProgress> = {}
     for (const section of sections) {
-      map[section.id] = getSectionProgress(section.id)
+      map[section.id] = getSectionProgress(projectId, section.id)
     }
     return map
-  }, [sections])
+  }, [sections, projectId])
 
   // Count completed sections (those with spec, data, AND screen designs)
   const completedSections = sections.filter(s => {
@@ -53,7 +53,7 @@ export function SectionsPage() {
   }).length
 
   return (
-    <AppLayout>
+    <>
       <div className="space-y-6">
         {/* Page intro */}
         <div className="mb-8">
@@ -92,7 +92,7 @@ export function SectionsPage() {
                   return (
                     <li key={section.id}>
                       <button
-                        onClick={() => navigate(`/sections/${section.id}`)}
+                        onClick={() => navigate(`/${projectId}/design/sections/${section.id}`)}
                         className="w-full px-6 py-4 flex items-center justify-between gap-4 text-left hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors"
                       >
                         <div className="flex items-start gap-4 min-w-0">
@@ -148,10 +148,10 @@ export function SectionsPage() {
 
         {/* Next Phase Button - shown when all sections are complete */}
         {sections.length > 0 && completedSections === sections.length && (
-          <NextPhaseButton nextPhase="export" />
+          <NextPhaseButton nextPhase={`/${projectId}/design/export`} />
         )}
       </div>
-    </AppLayout>
+    </>
   )
 }
 

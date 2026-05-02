@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { AlertTriangle, X } from 'lucide-react'
 import { loadProductData } from '@/lib/product-loader'
+import { useProject } from '@/lib/project-context'
 
 /**
  * Get a storage key based on the product name to track dismissed warnings per product
@@ -16,7 +17,8 @@ function getStorageKey(productName: string): string {
 }
 
 export function PhaseWarningBanner() {
-  const productData = useMemo(() => loadProductData(), [])
+  const { projectId } = useProject()
+  const productData = useMemo(() => loadProductData(projectId), [projectId])
   const [isDismissed, setIsDismissed] = useState(true) // Start dismissed to avoid flash
 
   const hasDataShape = !!productData.dataShape
@@ -46,10 +48,10 @@ export function PhaseWarningBanner() {
   // Build the warning message
   const missingPhases: { name: string; path: string }[] = []
   if (!hasDataShape) {
-    missingPhases.push({ name: 'Data Shape', path: '/data-shape' })
+    missingPhases.push({ name: 'Data Shape', path: `/${projectId}/design/data-shape` })
   }
   if (!hasDesign) {
-    missingPhases.push({ name: 'Design', path: '/design' })
+    missingPhases.push({ name: 'Design', path: `/${projectId}/design/tokens` })
   }
 
   return (

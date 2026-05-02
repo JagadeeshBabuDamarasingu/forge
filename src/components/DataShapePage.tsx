@@ -1,20 +1,21 @@
 import { useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { AppLayout } from '@/components/AppLayout'
 import { EmptyState } from '@/components/EmptyState'
 import { StepIndicator, type StepStatus } from '@/components/StepIndicator'
 import { NextPhaseButton } from '@/components/NextPhaseButton'
 import { loadProductData } from '@/lib/product-loader'
+import { useProject } from '@/lib/project-context'
 
 export function DataShapePage() {
-  const productData = useMemo(() => loadProductData(), [])
+  const { projectId } = useProject()
+  const productData = useMemo(() => loadProductData(projectId), [projectId])
   const dataShape = productData.dataShape
 
   const hasDataShape = !!dataShape
   const stepStatus: StepStatus = hasDataShape ? 'completed' : 'current'
 
   return (
-    <AppLayout>
+    <>
       <div className="space-y-6">
         {/* Page intro */}
         <div className="mb-8">
@@ -111,10 +112,10 @@ export function DataShapePage() {
         {/* Next Phase Button - shown when all steps complete */}
         {hasDataShape && (
           <StepIndicator step={2} status="current" isLast>
-            <NextPhaseButton nextPhase="design" />
+            <NextPhaseButton nextPhase={`/${projectId}/design/tokens`} />
           </StepIndicator>
         )}
       </div>
-    </AppLayout>
+    </>
   )
 }

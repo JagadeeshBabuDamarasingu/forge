@@ -1,0 +1,13 @@
+{
+  "project": {
+    "name": "Sample Project",
+    "type": "standard"
+  },
+  "orchestration": {
+    "autonomy": "semi",
+    "auto_chain": {
+      "analyse_to_plan": false,
+      "plan_to_design": true
+    }
+  }
+}

@@ -1,5 +1,20 @@
 # Shape Section
 
+## Path Resolution
+
+Before starting, determine the **active project ID**:
+1. Look for `projects/*/project.json` files to find projects
+2. If only one project exists, use it
+3. If multiple exist, ask the user: "Which project are we working on?"
+4. If no projects exist, ask the user to run `/new-project` first
+
+**All file paths in this command use shorthand notation. Resolve them as follows:**
+- `product/` → `projects/[project-id]/product/`
+- `src/sections/[section-id]/` → `src/sections/[project-id]/[section-id]/`
+- `src/shell/` → `src/shell/[project-id]/`
+
+Replace `[project-id]` with the actual project ID throughout.
+
 You are helping the user define the specification for a section of their product. This is a conversational process to establish the scope of functionality, user flows, and UI requirements — then automatically generate the spec and sample data.
 
 ## Step 1: Check Prerequisites

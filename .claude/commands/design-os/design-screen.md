@@ -1,5 +1,20 @@
 # Design Screen
 
+## Path Resolution
+
+Before starting, determine the **active project ID**:
+1. Look for `projects/*/project.json` files to find projects
+2. If only one project exists, use it
+3. If multiple exist, ask the user: "Which project are we working on?"
+4. If no projects exist, ask the user to run `/new-project` first
+
+**All file paths in this command use shorthand notation. Resolve them as follows:**
+- `product/` → `projects/[project-id]/product/`
+- `src/sections/[section-id]/` → `src/sections/[project-id]/[section-id]/`
+- `src/shell/` → `src/shell/[project-id]/`
+
+Replace `[project-id]` with the actual project ID throughout.
+
 You are helping the user create a screen design for a section of their product. The screen design will be a props-based React component that can be exported and integrated into any React codebase.
 
 ## Step 1: Check Prerequisites

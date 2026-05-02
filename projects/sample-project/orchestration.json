@@ -1,0 +1,21 @@
+{
+  "project": "sample-project",
+  "current_phase": "design",
+  "active_agents": [],
+  "gates": {
+    "analyse_complete": true,
+    "plan_approved": true,
+    "design_complete": false,
+    "build_complete": false
+  },
+  "pending_handoffs": [],
+  "agent_history": [
+    {
+      "agent": "analyst",
+      "started": "2026-05-01T10:00:00Z",
+      "completed": "2026-05-01T10:15:00Z",
+      "artifacts": ["analyse/brief.md"]
+    }
+  ],
+  "active_roundtable": null
+}
