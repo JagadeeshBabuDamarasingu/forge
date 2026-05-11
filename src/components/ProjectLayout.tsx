@@ -1,5 +1,5 @@
-import { Outlet, useParams, useNavigate } from 'react-router-dom'
-import { Anvil, ArrowLeft } from 'lucide-react'
+import { Outlet, useParams, useNavigate, useLocation } from 'react-router-dom'
+import { Anvil, ArrowLeft, FileText } from 'lucide-react'
 import { ProjectProvider } from '@/lib/project-context'
 import { ProjectPhaseNav } from './ProjectPhaseNav'
 import { ThemeToggle } from './ThemeToggle'
@@ -9,6 +9,8 @@ import { getProject } from '@/lib/project-loader'
 export function ProjectLayout() {
   const { projectId } = useParams<{ projectId: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
+  const isSpecsActive = location.pathname.endsWith('/specs')
 
   if (!projectId) return null
 
@@ -58,8 +60,20 @@ export function ProjectLayout() {
                 <ProjectPhaseNav projectId={projectId} project={project} />
               </div>
 
-              {/* Theme toggle */}
-              <div className="shrink-0">
+              {/* Specs link + Theme toggle */}
+              <div className="shrink-0 flex items-center gap-1">
+                <button
+                  onClick={() => navigate(`/${projectId}/specs`)}
+                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    isSpecsActive
+                      ? 'bg-stone-900 dark:bg-stone-100 text-stone-100 dark:text-stone-900'
+                      : 'text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
+                  }`}
+                  title="Spec files"
+                >
+                  <FileText className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  <span className="hidden md:inline">Specs</span>
+                </button>
                 <ThemeToggle />
               </div>
             </div>

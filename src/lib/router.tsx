@@ -16,6 +16,7 @@ import { ExportPage } from '@/components/ExportPage'
 import { BuildPage } from '@/components/BuildPage'
 import { EpicPage } from '@/components/EpicPage'
 import { ShipPage } from '@/components/ShipPage'
+import { ProjectSpecsPage } from '@/components/ProjectSpecsPage'
 
 function ProjectPhaseRedirect() {
   return <Navigate to="analyse" replace />
@@ -67,6 +68,9 @@ export const router = createBrowserRouter([
 
       // Ship phase
       { path: 'ship', element: <ShipPage /> },
+
+      // Spec files
+      { path: 'specs', element: <ProjectSpecsPage /> },
     ],
   },
 ])
