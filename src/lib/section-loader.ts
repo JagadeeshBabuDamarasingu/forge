@@ -1,14 +1,14 @@
 import type { SectionData, ParsedSpec, ScreenDesignInfo, ScreenshotInfo } from '@/types/section'
 import type { ComponentType } from 'react'
 
-// Product data: projects/[project-id]/product/sections/[section-id]/...
-const specFiles = import.meta.glob('/projects/*/product/sections/*/spec.md', {
+// Section data: projects/[project-id]/sections/[section-id]/...
+const specFiles = import.meta.glob('/projects/*/sections/*/spec.md', {
   query: '?raw',
   import: 'default',
   eager: true,
 }) as Record<string, string>
 
-const dataFiles = import.meta.glob('/projects/*/product/sections/*/data.json', {
+const dataFiles = import.meta.glob('/projects/*/sections/*/data.json', {
   eager: true,
 }) as Record<string, { default: Record<string, unknown> }>
 
@@ -18,7 +18,7 @@ const screenDesignModules = import.meta.glob('/src/sections/*/*/*.tsx') as Recor
   () => Promise<{ default: ComponentType }>
 >
 
-const screenshotFiles = import.meta.glob('/projects/*/product/sections/*/*.png', {
+const screenshotFiles = import.meta.glob('/projects/*/sections/*/*.png', {
   query: '?url',
   import: 'default',
   eager: true,
@@ -30,7 +30,7 @@ function extractScreenDesignName(path: string): string | null {
 }
 
 function extractScreenshotName(path: string): string | null {
-  const match = path.match(/\/projects\/[^/]+\/product\/sections\/[^/]+\/([^/]+)\.png$/)
+  const match = path.match(/\/projects\/[^/]+\/sections\/[^/]+\/([^/]+)\.png$/)
   return match?.[1] || null
 }
 
@@ -76,7 +76,7 @@ export function getSectionScreenDesigns(projectId: string, sectionId: string): S
 }
 
 export function getSectionScreenshots(projectId: string, sectionId: string): ScreenshotInfo[] {
-  const prefix = `/projects/${projectId}/product/sections/${sectionId}/`
+  const prefix = `/projects/${projectId}/sections/${sectionId}/`
   return Object.entries(screenshotFiles)
     .filter(([p]) => p.startsWith(prefix))
     .map(([p, url]) => {
@@ -96,8 +96,8 @@ export function loadScreenDesignComponent(
 }
 
 export function loadSectionData(projectId: string, sectionId: string): SectionData {
-  const specPath = `/projects/${projectId}/product/sections/${sectionId}/spec.md`
-  const dataPath = `/projects/${projectId}/product/sections/${sectionId}/data.json`
+  const specPath = `/projects/${projectId}/sections/${sectionId}/spec.md`
+  const dataPath = `/projects/${projectId}/sections/${sectionId}/data.json`
   const specContent = specFiles[specPath] || null
   const dataModule = dataFiles[dataPath]
   return {
@@ -111,28 +111,28 @@ export function loadSectionData(projectId: string, sectionId: string): SectionDa
 }
 
 export function hasSectionSpec(projectId: string, sectionId: string): boolean {
-  return `/projects/${projectId}/product/sections/${sectionId}/spec.md` in specFiles
+  return `/projects/${projectId}/sections/${sectionId}/spec.md` in specFiles
 }
 
 export function sectionUsesShell(projectId: string, sectionId: string): boolean {
-  const specPath = `/projects/${projectId}/product/sections/${sectionId}/spec.md`
+  const specPath = `/projects/${projectId}/sections/${sectionId}/spec.md`
   const specContent = specFiles[specPath]
   if (!specContent) return true
   return parseSpec(specContent)?.useShell ?? true
 }
 
 export function hasSectionData(projectId: string, sectionId: string): boolean {
-  return `/projects/${projectId}/product/sections/${sectionId}/data.json` in dataFiles
+  return `/projects/${projectId}/sections/${sectionId}/data.json` in dataFiles
 }
 
 export function getAllSectionIds(projectId: string): string[] {
   const ids = new Set<string>()
   for (const path of Object.keys(specFiles)) {
-    const match = path.match(`/projects/${projectId}/product/sections/([^/]+)/`)
+    const match = path.match(`/projects/${projectId}/sections/([^/]+)/`)
     if (match) ids.add(match[1])
   }
   for (const path of Object.keys(dataFiles)) {
-    const match = path.match(`/projects/${projectId}/product/sections/([^/]+)/`)
+    const match = path.match(`/projects/${projectId}/sections/([^/]+)/`)
     if (match) ids.add(match[1])
   }
   for (const path of Object.keys(screenDesignModules)) {

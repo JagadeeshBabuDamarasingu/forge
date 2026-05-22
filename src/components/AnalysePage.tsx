@@ -1,4 +1,4 @@
-import { Microscope, FileText, Search, Newspaper, CheckCircle2, Circle } from 'lucide-react'
+import { Microscope, FileText, Search, Newspaper, FlaskConical, CheckCircle2, Circle } from 'lucide-react'
 import { useProject } from '@/lib/project-context'
 import {
   hasAnalyseBrief,
@@ -113,10 +113,10 @@ export function AnalysePage() {
           content={getMarketResearch(projectId)}
         />
         <ArtifactCard
-          icon={Search}
+          icon={FlaskConical}
           title="Technical Research"
           description="Feasibility, technology choices, known constraints. Surface hard problems early."
-          command="/market-research"
+          command="/technical-research"
           exists={hasTech}
           content={getTechResearch(projectId)}
         />
