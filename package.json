@@ -38,7 +38,7 @@
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.17",
     "tsx": "^4.19.4",
-    "ws": "^8.18.2"
+    "ws": "^8.20.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
