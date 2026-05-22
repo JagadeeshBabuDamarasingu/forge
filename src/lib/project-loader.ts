@@ -1,9 +1,20 @@
-import type { ProjectMeta, ProjectType, ProjectPhase, ProjectStatus, SprintStatus } from '@/types/workspace'
+import type {
+  ProjectMeta,
+  ProjectType,
+  ProjectPhase,
+  ProjectStatus,
+  ProjectsRegistry,
+  SprintStatus,
+} from '@/types/workspace'
 
 // Discover all projects by their project.json files
 const projectMetaFiles = import.meta.glob('/projects/*/project.json', {
   eager: true,
 }) as Record<string, { default: Omit<ProjectMeta, 'id'> }>
+
+const registryFiles = import.meta.glob('/projects/projects.json', {
+  eager: true,
+}) as Record<string, { default: ProjectsRegistry }>
 
 // Analyse phase artifacts
 const briefFiles = import.meta.glob('/projects/*/analyse/brief.md', {
@@ -82,7 +93,7 @@ function extractProjectId(path: string): string | null {
 }
 
 export function listProjects(): ProjectMeta[] {
-  return Object.entries(projectMetaFiles).map(([path, module]) => {
+  const localProjects = Object.entries(projectMetaFiles).map(([path, module]) => {
     const id = extractProjectId(path) || 'unknown'
     const data = module.default
     return {
@@ -94,7 +105,27 @@ export function listProjects(): ProjectMeta[] {
       currentPhase: (data.currentPhase || 'analyse') as ProjectPhase,
       created: data.created || new Date().toISOString(),
       updated: data.updated || new Date().toISOString(),
+      storage: data.storage,
     }
+  })
+
+  const byId = new Map<string, ProjectMeta>()
+  for (const project of localProjects) {
+    byId.set(project.id, project)
+  }
+
+  const registryProjects = registryFiles['/projects/projects.json']?.default?.projects ?? []
+  for (const project of registryProjects) {
+    const existing = byId.get(project.id)
+    byId.set(project.id, {
+      ...project,
+      ...existing,
+      storage: existing?.storage ?? project.storage,
+    })
+  }
+
+  return Array.from(byId.values()).sort((a, b) => {
+    return new Date(b.updated).getTime() - new Date(a.updated).getTime()
   })
 }
 

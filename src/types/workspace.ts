@@ -15,6 +15,10 @@ export interface ProjectMeta {
   updated: string // ISO date string
 }
 
+export interface ProjectsRegistry {
+  projects: ProjectMeta[]
+}
+
 // ============================================================================
 // Orchestration
 // ============================================================================

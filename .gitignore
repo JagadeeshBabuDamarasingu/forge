@@ -4,9 +4,14 @@
 
 # Dependencies
 node_modules/
+.venv/
 
 # Build output
 dist/
+
+# Graphify local runtime metadata
+graphify-out/manifest.json
+graphify-out/cost.json
 
 # IDE
 .idea/
@@ -21,3 +26,7 @@ dist/
 # Logs
 *.log
 npm-debug.log*
+
+
+/src/sections/*
+/graphify-out/

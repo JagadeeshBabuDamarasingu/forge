@@ -164,11 +164,22 @@ export function BuildPage() {
         })}
       </div>
 
-      <div className="bg-stone-50 dark:bg-stone-900/50 rounded-xl p-5 border border-stone-200 dark:border-stone-800">
-        <h4 className="text-xs font-semibold text-stone-700 dark:text-stone-300 mb-2">Add a story</h4>
-        <code className="block text-xs font-mono bg-stone-100 dark:bg-stone-800 rounded-lg px-4 py-3 text-stone-800 dark:text-stone-200 select-all">
-          /dev-story
-        </code>
+      <div className="bg-stone-50 dark:bg-stone-900/50 rounded-xl p-5 border border-stone-200 dark:border-stone-800 space-y-3">
+        <h4 className="text-xs font-semibold text-stone-700 dark:text-stone-300">Build commands</h4>
+        <div className="space-y-2">
+          {[
+            { cmd: '/dev-story', label: 'Flesh out a story with implementation detail' },
+            { cmd: '/sprint-status', label: 'Update story and epic statuses interactively' },
+            { cmd: '/roundtable', label: 'Get multi-perspective analysis on a decision' },
+          ].map(({ cmd, label }) => (
+            <div key={cmd} className="flex items-center gap-3">
+              <code className="text-xs font-mono bg-stone-100 dark:bg-stone-800 px-2 py-1 rounded text-stone-800 dark:text-stone-200 shrink-0 select-all">
+                {cmd}
+              </code>
+              <span className="text-xs text-stone-400 dark:text-stone-500">{label}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
